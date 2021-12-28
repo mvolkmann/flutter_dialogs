@@ -30,6 +30,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  void _alert(String message) {
+    alert(context: context, title: 'Alert', message: message);
+  }
+
   void _confirm(String question) async {
     var answer = await confirm(
       context: context,
@@ -51,7 +55,11 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ElevatedButton(
-              child: Text('Show Dialog'),
+              child: Text('Show Alert Dialog'),
+              onPressed: () => _alert('Something interesting happened.'),
+            ),
+            ElevatedButton(
+              child: Text('Show Confirm Dialog'),
               onPressed: () => _confirm('Are you sure?'),
             )
           ],
