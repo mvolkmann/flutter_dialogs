@@ -30,6 +30,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  DateTime selectedDateTime = DateTime.now();
+
   void _alert(String message) {
     alert(context: context, title: 'Alert', message: message);
   }
@@ -41,6 +43,19 @@ class _MyHomePageState extends State<MyHomePage> {
       message: question,
     );
     print('answer = $answer');
+  }
+
+  void _pickDate() async {
+    var dateTime = await showDatePicker(
+      context: context,
+      initialDate: selectedDateTime,
+      //
+      firstDate: DateTime(1970),
+      lastDate: DateTime(2030, 12, 31),
+    );
+    if (dateTime != null) {
+      setState(() => selectedDateTime = dateTime);
+    }
   }
 
   @override
@@ -61,7 +76,12 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               child: Text('Show Confirm Dialog'),
               onPressed: () => _confirm('Are you sure?'),
-            )
+            ),
+            Text(selectedDateTime.toString()),
+            ElevatedButton(
+              child: Text('Show DatePickerDialog'),
+              onPressed: _pickDate,
+            ),
           ],
         ),
       ),
