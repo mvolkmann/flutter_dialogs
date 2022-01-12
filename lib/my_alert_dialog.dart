@@ -87,6 +87,5 @@ class MyAlertDialog extends StatelessWidget {
             content: Text(message),
             actions: buttons,
           );
-    */
   }
 }
