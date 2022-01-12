@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'my_alert_dialog.dart';
 
@@ -32,8 +33,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   DateTime selectedDateTime = DateTime.now();
 
-  void _alert(String message) {
-    alert(context: context, title: 'Alert', message: message);
+  void _alert(String message, {bool cupertino = false}) {
+    alert(
+      context: context,
+      cupertino: cupertino,
+      title: 'Alert',
+      message: message,
+    );
   }
 
   void _confirm(String question) async {
@@ -48,14 +54,54 @@ class _MyHomePageState extends State<MyHomePage> {
   void _pickDate() async {
     var dateTime = await showDatePicker(
       context: context,
+      helpText: 'Select a date.',
       initialDate: selectedDateTime,
-      //
       firstDate: DateTime(1970),
       lastDate: DateTime(2030, 12, 31),
     );
     if (dateTime != null) {
       setState(() => selectedDateTime = dateTime);
     }
+  }
+
+  void _pickDateRange(BuildContext context) async {
+    var dateRange =
+        DateTimeRange(start: DateTime(2022, 4, 16), end: DateTime(2022, 5, 3));
+    // Click the start date, then click the end date.
+    // Click again to start over, selecting a new start date.
+    // The days in between will be shaded
+    // to indicate that they are in the range.
+    var newDateRange = await showDateRangePicker(
+      context: context,
+      helpText: 'Select start and end dates.',
+      initialDateRange: dateRange,
+      firstDate: DateTime(1970),
+      lastDate: DateTime(2030, 12, 31),
+    );
+    print('newDateRange = $newDateRange');
+  }
+
+  void _pickTime(BuildContext context) async {
+    var time = TimeOfDay(hour: 10, minute: 19);
+    var newTime = await showDialog(
+      context: context,
+      builder: (_) => TimePickerDialog(
+        helpText: 'Select a time.',
+        initialTime: time,
+      ),
+    );
+    print('newTime = $newTime');
+  }
+
+  void _showAbout(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (_) => AboutDialog(
+              applicationIcon: Icon(Icons.ac_unit_outlined),
+              applicationName: 'Dialog Demos',
+              applicationVersion: '1.0.0',
+              applicationLegalese: 'All rights reserved.',
+            ));
   }
 
   @override
@@ -70,8 +116,19 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ElevatedButton(
-              child: Text('Show Alert Dialog'),
+              child: Text('About...'),
+              onPressed: () => _showAbout(context),
+            ),
+            ElevatedButton(
+              child: Text('Show Material Alert Dialog'),
               onPressed: () => _alert('Something interesting happened.'),
+            ),
+            ElevatedButton(
+              child: Text('Show Cupertino Alert Dialog'),
+              onPressed: () => _alert(
+                'Something interesting happened.',
+                cupertino: true,
+              ),
             ),
             ElevatedButton(
               child: Text('Show Confirm Dialog'),
@@ -82,6 +139,14 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text('Show DatePickerDialog'),
               onPressed: _pickDate,
             ),
+            ElevatedButton(
+              child: Text('Select Date Range'),
+              onPressed: () => _pickDateRange(context),
+            ),
+            ElevatedButton(
+              child: Text('Select Time'),
+              onPressed: () => _pickTime(context),
+            )
           ],
         ),
       ),

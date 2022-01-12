@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 /// Displays an AlertDialog with an OK button
@@ -6,10 +7,12 @@ Future<void> alert({
   required BuildContext context,
   required String title,
   required String message,
+  bool cupertino = false,
 }) async {
   await showDialog<String>(
     context: context,
     builder: (_) => MyAlertDialog(
+      cupertino: cupertino,
       title: title,
       message: message,
       options: ['OK'],
@@ -36,12 +39,14 @@ Future<String?> confirm({
 }
 
 class MyAlertDialog extends StatelessWidget {
+  final bool cupertino;
   final String title;
   final String message;
   final List<String> options;
 
   MyAlertDialog({
     Key? key,
+    this.cupertino = false,
     required this.title,
     required this.message,
     required this.options,
@@ -57,10 +62,24 @@ class MyAlertDialog extends StatelessWidget {
           ),
         )
         .toList();
-    return AlertDialog(
+    /*
+    var ctor = cupertino ? CupertinoAlertDialog : AlertDialog;
+    return ctor(
       title: Text(title),
       content: Text(message),
       actions: buttons,
     );
+    */
+    return cupertino
+        ? CupertinoAlertDialog(
+            title: Text(title),
+            content: Text(message),
+            actions: buttons,
+          )
+        : AlertDialog(
+            title: Text(title),
+            content: Text(message),
+            actions: buttons,
+          );
   }
 }
