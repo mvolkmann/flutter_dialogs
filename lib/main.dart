@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'my_alert_dialog.dart';
 
@@ -16,24 +15,19 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Home Page'),
+      home: const MyHomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({Key? key}) : super(key: key);
 
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  DateTime selectedDateTime = DateTime.now();
-
-  void _alert(String message, {bool cupertino = false}) {
+  void _alert({
+    required BuildContext context,
+    bool cupertino = false,
+    required String message,
+  }) {
     alert(
       context: context,
       cupertino: cupertino,
@@ -42,7 +36,10 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _confirm(String question) async {
+  void _confirm({
+    required BuildContext context,
+    required String question,
+  }) async {
     var answer = await confirm(
       context: context,
       title: 'Confirm',
@@ -51,22 +48,23 @@ class _MyHomePageState extends State<MyHomePage> {
     print('answer = $answer');
   }
 
-  void _pickDate() async {
-    var dateTime = await showDatePicker(
+  void _pickDate({required BuildContext context}) async {
+    var dateTime = DateTime.now();
+    var newDateTime = await showDatePicker(
       context: context,
       helpText: 'Select a date.',
-      initialDate: selectedDateTime,
+      initialDate: dateTime,
       firstDate: DateTime(1970),
       lastDate: DateTime(2030, 12, 31),
     );
-    if (dateTime != null) {
-      setState(() => selectedDateTime = dateTime);
-    }
+    print('newDateTime = $newDateTime');
   }
 
-  void _pickDateRange(BuildContext context) async {
-    var dateRange =
-        DateTimeRange(start: DateTime(2022, 4, 16), end: DateTime(2022, 5, 3));
+  void _pickDateRange({required BuildContext context}) async {
+    var dateRange = DateTimeRange(
+      start: DateTime(2022, 4, 16),
+      end: DateTime(2022, 5, 3),
+    );
     // Click the start date, then click the end date.
     // Click again to start over, selecting a new start date.
     // The days in between will be shaded
@@ -109,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
     print(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('Dialog Demo'),
       ),
       body: Center(
         child: Column(
@@ -121,27 +119,35 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ElevatedButton(
               child: Text('Show Material Alert Dialog'),
-              onPressed: () => _alert('Something interesting happened.'),
+              onPressed: () => _alert(
+                context: context,
+                message: 'Something interesting happened.',
+              ),
             ),
             ElevatedButton(
               child: Text('Show Cupertino Alert Dialog'),
               onPressed: () => _alert(
-                'Something interesting happened.',
+                context: context,
                 cupertino: true,
+                message: 'Something interesting happened.',
               ),
             ),
             ElevatedButton(
               child: Text('Show Confirm Dialog'),
-              onPressed: () => _confirm('Are you sure?'),
+              onPressed: () => _confirm(
+                context: context,
+                question: 'Are you sure?',
+              ),
             ),
-            Text(selectedDateTime.toString()),
             ElevatedButton(
               child: Text('Show DatePickerDialog'),
-              onPressed: _pickDate,
+              onPressed: () {
+                _pickDate(context: context);
+              },
             ),
             ElevatedButton(
               child: Text('Select Date Range'),
-              onPressed: () => _pickDateRange(context),
+              onPressed: () => _pickDateRange(context: context),
             ),
             ElevatedButton(
               child: Text('Select Time'),

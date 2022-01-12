@@ -27,6 +27,7 @@ Future<String?> confirm({
   required BuildContext context,
   required String title,
   required String message,
+  bool cupertino = false,
 }) async {
   return await showDialog<String>(
     context: context,
@@ -62,6 +63,9 @@ class MyAlertDialog extends StatelessWidget {
           ),
         )
         .toList();
+
+    // "Tearoffs" for constructor calls is coming soon.
+    // See https://github.com/dart-lang/language/blob/master/accepted/2.15/constructor-tearoffs/feature-specification.md.
     /*
     var ctor = cupertino ? CupertinoAlertDialog : AlertDialog;
     return ctor(
@@ -70,6 +74,8 @@ class MyAlertDialog extends StatelessWidget {
       actions: buttons,
     );
     */
+
+    // We have to use this approach until constructor tearoffs are supported.
     return cupertino
         ? CupertinoAlertDialog(
             title: Text(title),
@@ -81,5 +87,6 @@ class MyAlertDialog extends StatelessWidget {
             content: Text(message),
             actions: buttons,
           );
+    */
   }
 }
